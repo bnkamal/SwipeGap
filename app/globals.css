@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-blue:   #1A4D8F;
+  --brand-teal:   #0D7A5F;
+  --brand-orange: #E87722;
+  --gap-red:      #EF4444;
+  --gap-green:    #22C55E;
+  --gap-amber:    #F59E0B;
+  --gap-gray:     #94A3B8;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { @apply text-gray-900 bg-gray-50; }
+}
+
+@layer components {
+  .swipe-card {
+    @apply bg-white rounded-2xl shadow-lg border border-gray-100
+           cursor-grab active:cursor-grabbing select-none;
+    will-change: transform;
+  }
+  .heatmap-cell {
+    @apply rounded-md transition-colors duration-300 cursor-pointer
+           hover:ring-2 hover:ring-offset-1 hover:ring-brand-blue;
+  }
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium
+           text-gray-600 hover:bg-blue-50 hover:text-brand-blue transition-colors;
+  }
+  .sidebar-link.active {
+    @apply bg-blue-50 text-brand-blue;
+  }
+}
