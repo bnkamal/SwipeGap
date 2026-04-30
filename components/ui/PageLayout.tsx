@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -26,10 +27,7 @@ export function PageLayout({ children, navItems, user, title }: PageLayoutProps)
       <aside className="hidden md:flex w-64 flex-col bg-white border-r border-gray-100 flex-shrink-0">
         {/* Logo */}
         <div className="flex items-center gap-2 px-6 py-5 border-b border-gray-100">
-          <div className="w-8 h-8 bg-brand-blue rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">SG</span>
-          </div>
-          <span className="font-bold text-gray-900">SwipeGap</span>
+          <Image src="/logo.png" alt="SwipeGap" width={140} height={44} className="object-contain" />
         </div>
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">

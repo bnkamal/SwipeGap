@@ -1,4 +1,5 @@
 'use client'
+import { Suspense } from 'react'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -19,7 +20,7 @@ const MODE_LIMITS: Record<SessionMode, number> = { quick: 10, deep: 50, full: 99
 interface SwipeRecord { topic_id: string; direction: 'left' | 'right' }
 interface QuizQuestion { id: string; question: string; options: string[]; correct: number; explanation: string }
 
-export default function SwipePage() {
+function SwipePage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = createClient()
@@ -340,5 +341,14 @@ export default function SwipePage() {
         ← Arrow keys to swipe →
       </p>
     </div>
+  )
+}
+
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-gray-400">Loading...</div>}>
+      <SwipePage />
+    </Suspense>
   )
 }

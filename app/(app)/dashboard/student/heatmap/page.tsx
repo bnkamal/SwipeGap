@@ -94,7 +94,7 @@ export default function HeatmapPage() {
     })
 
     setTopics(enriched)
-    setSubjects([...new Set(allTopics.map(t => t.subject))])
+    setSubjects(Array.from(new Set(allTopics.map(t => t.subject))))
     setLoading(false)
   }, [])
 

@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -40,7 +41,10 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-teal-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-blue rounded-2xl mb-4">
+          <div className="flex justify-center mb-4">
+            <Image src="/logo.png" alt="SwipeGap" width={200} height={64} priority />
+          </div>
+          <div className="hidden">
             <span className="text-white font-bold text-2xl">SG</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
