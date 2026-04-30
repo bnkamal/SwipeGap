@@ -28,11 +28,8 @@ export default async function StudentDashboard() {
 
         {/* Header with logo + signout */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-brand-blue rounded-lg flex items-center justify-center">
-              <span className="text-white font-black text-sm">S</span>
-            </div>
-            <span className="font-bold text-gray-900">SwipeGap</span>
+          <div className="flex items-center">
+            <img src="/logo.png" alt="SwipeGap" style={{width:"160px", height:"auto"}} />
           </div>
           <a href="/api/auth/signout" className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1">
             Sign out →
