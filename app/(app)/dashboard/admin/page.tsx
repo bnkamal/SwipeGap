@@ -53,7 +53,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div><h1 className="text-xl font-bold text-gray-900">SwipeGap Admin</h1><p className="text-xs text-gray-500">Platform management</p></div>
+          <img src="/logo.png" alt="SwipeGap" style={{width:"160px", height:"auto"}} />
           <a href="/api/auth/signout" className="text-sm text-gray-400 hover:text-gray-600">Sign out</a>
         </div>
       </div>
