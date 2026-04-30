@@ -42,7 +42,7 @@ export default function RegisterPage() {
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <Image src="/logo.png" alt="SwipeGap" width={200} height={64} priority />
+            <img src="/logo.png" alt="SwipeGap" style={{width:"280px", height:"auto"}} />
           </div>
           <div className="hidden">
             <span className="text-white font-bold text-2xl">SG</span>

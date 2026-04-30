@@ -52,7 +52,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-2">
-            <Image src="/logo.png" alt="SwipeGap" width={220} height={70} className="drop-shadow-lg" priority />
+            <img src="/logo.png" alt="SwipeGap" style={{width:"320px", height:"auto"}} />
           </div>
         </div>
         <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8">

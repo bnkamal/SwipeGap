@@ -107,6 +107,7 @@ export default function StudentOnboarding() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-teal-50 flex items-center justify-center p-4">
+      <div className="flex justify-center mb-6"><img src="/logo.png" alt="SwipeGap" style={{width:"200px", height:"auto"}} /></div>
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8">
         <div className="mb-6">
           <div className="flex gap-1 mb-6">
