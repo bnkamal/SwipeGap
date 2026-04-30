@@ -45,6 +45,11 @@ export default async function MentorDashboard() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
 
+        <div className="flex items-center justify-between mb-2">
+          <img src="/logo.png" alt="SwipeGap" style={{width:"160px", height:"auto"}} />
+          <a href="/api/auth/signout" className="text-sm text-gray-400 hover:text-gray-600">Sign out →</a>
+        </div>
+
         <div className={`rounded-2xl p-6 text-white ${isVerified ? 'bg-gradient-to-r from-teal-600 to-teal-800' : 'bg-gradient-to-r from-gray-600 to-gray-800'}`}>
           <p className="text-sm opacity-75 mb-1">Welcome back 👋</p>
           <h1 className="text-2xl font-bold">{profile.name}</h1>

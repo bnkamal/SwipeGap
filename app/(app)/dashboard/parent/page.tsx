@@ -11,8 +11,8 @@ export default async function ParentDashboard() {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Parent Dashboard</h1>
-          <a href="/api/auth/signout" className="text-sm text-gray-400 hover:text-gray-600">Sign out</a>
+          <img src="/logo.png" alt="SwipeGap" style={{width:"160px", height:"auto"}} />
+          <a href="/api/auth/signout" className="text-sm text-gray-400 hover:text-gray-600">Sign out →</a>
         </div>
         {!children || children.length === 0 ? (
           <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
