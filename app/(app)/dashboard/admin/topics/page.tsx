@@ -16,6 +16,8 @@ export default function AdminTopics() {
   const [filterCurriculum, setFilterCurriculum] = useState('all')
   const [filterExam, setFilterExam] = useState('all')
   const [uploading, setUploading] = useState(false)
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [bulkDeleting, setBulkDeleting] = useState(false)
   const [uploadResult, setUploadResult] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -54,20 +56,51 @@ export default function AdminTopics() {
     await supabase.from('topics').delete().eq('id', id); await load()
   }
 
-  // CSV Upload handler
+  // Proper CSV parser that handles quoted fields with commas inside
+  function parseCSV(text: string): Record<string, string>[] {
+    const rows: Record<string, string>[] = []
+    const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n')
+    if (lines.length < 2) return rows
+
+    function parseLine(line: string): string[] {
+      const result: string[] = []
+      let current = ''
+      let inQuotes = false
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i]
+        if (char === '"') {
+          if (inQuotes && line[i+1] === '"') { current += '"'; i++ }
+          else { inQuotes = !inQuotes }
+        } else if (char === ',' && !inQuotes) {
+          result.push(current.trim())
+          current = ''
+        } else {
+          current += char
+        }
+      }
+      result.push(current.trim())
+      return result
+    }
+
+    const headers = parseLine(lines[0]).map(h => h.toLowerCase().replace(/"/g, '').trim())
+    for (let i = 1; i < lines.length; i++) {
+      if (!lines[i].trim()) continue
+      const vals = parseLine(lines[i])
+      const obj: Record<string, string> = {}
+      headers.forEach((h, idx) => { obj[h] = vals[idx] || '' })
+      rows.push(obj)
+    }
+    return rows
+  }
+
   async function handleCSVUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true); setUploadResult('')
     const text = await file.text()
-    const lines = text.split('\n').filter(l => l.trim())
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''))
-    const rows = lines.slice(1)
+    const rows = parseCSV(text)
     let added = 0, errors = 0
-    for (const row of rows) {
-      const vals = row.split(',').map(v => v.trim().replace(/"/g, ''))
-      const obj: any = {}
-      headers.forEach((h, i) => { obj[h] = vals[i] || '' })
+    for (const obj of rows) {
       const topic = {
         title: obj.title || obj.topic || '',
         subject: obj.subject || '',
@@ -78,7 +111,7 @@ export default function AdminTopics() {
       }
       if (!topic.title) { errors++; continue }
       const { error } = await supabase.from('topics').insert(topic)
-      if (error) errors++; else added++
+      if (error) { console.error(error); errors++ } else added++
     }
     await load()
     setUploadResult(`✅ ${added} topics added${errors > 0 ? `, ⚠️ ${errors} skipped` : ''}`)
@@ -91,6 +124,34 @@ export default function AdminTopics() {
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a'); a.href = url; a.download = 'swipegap_topics_template.csv'; a.click()
+  }
+
+  async function handleBulkDelete() {
+    if (selected.size === 0) return
+    if (!confirm(`Delete ${selected.size} selected topics? This cannot be undone.`)) return
+    setBulkDeleting(true)
+    for (const id of Array.from(selected)) {
+      await supabase.from('topics').delete().eq('id', id)
+    }
+    setSelected(new Set())
+    await load()
+    setBulkDeleting(false)
+  }
+
+  function toggleSelect(id: string) {
+    setSelected(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id); else next.add(id)
+      return next
+    })
+  }
+
+  function selectAll() {
+    if (selected.size === displayed.length) {
+      setSelected(new Set())
+    } else {
+      setSelected(new Set(displayed.map(t => t.id)))
+    }
   }
 
   const displayed = topics.filter(t =>
@@ -236,10 +297,29 @@ export default function AdminTopics() {
           </div>
         </div>
 
+        {/* Bulk Delete Bar */}
+        {selected.size > 0 && (
+          <div className="bg-red-50 border border-red-200 rounded-2xl px-4 py-3 flex items-center justify-between">
+            <p className="text-sm text-red-700 font-medium">{selected.size} topic{selected.size > 1 ? 's' : ''} selected</p>
+            <div className="flex gap-2">
+              <button onClick={() => setSelected(new Set())} className="text-xs text-gray-500 px-3 py-1.5 border border-gray-200 rounded-lg bg-white">
+                Clear
+              </button>
+              <button onClick={handleBulkDelete} disabled={bulkDeleting}
+                className="text-xs bg-red-600 text-white px-4 py-1.5 rounded-lg disabled:opacity-50 font-medium">
+                {bulkDeleting ? 'Deleting...' : `🗑️ Delete ${selected.size} selected`}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Topics List */}
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+          <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
             <p className="text-sm text-gray-500">Showing {displayed.length} of {topics.length}</p>
+            <button onClick={selectAll} className="text-xs text-brand-blue hover:underline">
+              {selected.size === displayed.length && displayed.length > 0 ? 'Deselect all' : 'Select all'}
+            </button>
           </div>
           {loading ? (
             <div className="p-6 space-y-3">{[1,2,3].map(i => <div key={i} className="h-12 bg-gray-100 animate-pulse rounded-xl"/>)}</div>
@@ -248,17 +328,21 @@ export default function AdminTopics() {
           ) : (
             <div className="divide-y divide-gray-50">
               {displayed.map(t => (
-                <div key={t.id} className="flex items-center justify-between px-4 py-3 hover:bg-gray-50">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">{t.title}</p>
-                    <div className="flex gap-2 mt-0.5 flex-wrap">
-                      <span className="text-xs text-gray-500">{t.subject}</span>
-                      <span className="text-xs text-gray-400">·</span>
-                      <span className="text-xs text-gray-500">{t.grade}</span>
-                      <span className="text-xs text-gray-400">·</span>
-                      <span className="text-xs text-gray-500">{t.curriculum}</span>
-                      <span className="text-xs text-gray-400">·</span>
-                      <span className="text-xs bg-blue-50 text-blue-600 px-1.5 rounded">{t.exam_tag}</span>
+                <div key={t.id} className={"flex items-center justify-between px-4 py-3 hover:bg-gray-50 " + (selected.has(t.id) ? 'bg-red-50' : '')}>
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <input type="checkbox" checked={selected.has(t.id)} onChange={() => toggleSelect(t.id)}
+                      className="w-4 h-4 rounded border-gray-300 text-brand-blue flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-medium text-sm truncate">{t.title}</p>
+                      <div className="flex gap-2 mt-0.5 flex-wrap">
+                        <span className="text-xs text-gray-500">{t.subject}</span>
+                        <span className="text-xs text-gray-400">·</span>
+                        <span className="text-xs text-gray-500">{t.grade}</span>
+                        <span className="text-xs text-gray-400">·</span>
+                        <span className="text-xs text-gray-500">{t.curriculum}</span>
+                        <span className="text-xs text-gray-400">·</span>
+                        <span className="text-xs bg-blue-50 text-blue-600 px-1.5 rounded">{t.exam_tag}</span>
+                      </div>
                     </div>
                   </div>
                   <div className="flex gap-2 ml-3">
