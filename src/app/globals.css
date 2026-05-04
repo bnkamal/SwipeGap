@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-dm-sans: "DM Sans", system-ui, sans-serif;
+  --font-dm-serif: "DM Serif Display", Georgia, serif;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #fdf9f0;
+    color: #1e1206;
+    font-family: var(--font-dm-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-dm-serif);
+  }
+}
+
+@layer utilities {
+  .bg-cream {
+    background-color: #fdf9f0;
+  }
+  .bg-cream-mid {
+    background-color: #f5edd8;
+  }
+  .border-cream {
+    border-color: #e2d8c4;
+  }
+  .text-ink {
+    color: #1e1206;
+  }
+  .text-ink-mid {
+    color: #5c4a2a;
+  }
+  .text-ink-light {
+    color: #9a8060;
+  }
+
+  /* Animate on scroll — add class via JS */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .animate-on-scroll.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Card stack animation overrides for reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-1,
+  .animate-float-2,
+  .animate-float-3 {
+    animation: none !important;
+  }
+}
