@@ -29,7 +29,7 @@ export default function RegisterPage() {
     setLoading(true)
     setError('')
     const supabase = createClient()
-    const { data, error } = await supabase.auth.signUp({ email, password })
+    const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { role } } })
     if (error) { setError(error.message); setLoading(false); return }
     if (data.user) {
       await supabase.from('users').insert({ id: data.user.id, email, role })

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
-export default async function ParentDashboard() {
+export default async function ParentDashboard({ searchParams }: { searchParams: { error?: string, linked?: string } }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -55,6 +55,32 @@ export default async function ParentDashboard() {
           <h1 className="text-xl font-bold mt-1">Parent Dashboard</h1>
           <p className="text-sm opacity-75 mt-1">{user.email}</p>
         </div>
+
+        {/* Error/Success Messages */}
+        {searchParams?.error === 'not_found' && (
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center gap-3">
+            <span className="text-2xl">❌</span>
+            <div>
+              <p className="font-semibold text-red-800">Code not found</p>
+              <p className="text-sm text-red-600">Double-check the 8-character code from your child's dashboard.</p>
+            </div>
+          </div>
+        )}
+        {searchParams?.error === 'invalid_code' && (
+          <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 flex items-center gap-3">
+            <span className="text-2xl">⚠️</span>
+            <p className="text-sm text-orange-700">Please enter a valid invite code (at least 6 characters).</p>
+          </div>
+        )}
+        {searchParams?.linked === 'true' && (
+          <div className="bg-green-50 border border-green-200 rounded-2xl p-4 flex items-center gap-3">
+            <span className="text-2xl">✅</span>
+            <div>
+              <p className="font-semibold text-green-800">Successfully linked!</p>
+              <p className="text-sm text-green-600">You can now view your child's progress below.</p>
+            </div>
+          </div>
+        )}
 
         {!children || children.length === 0 ? (
           /* No children linked yet */
