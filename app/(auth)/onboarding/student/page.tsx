@@ -22,6 +22,18 @@ export default function StudentOnboarding() {
   const toggleArr = (arr: string[], setArr: (v: string[]) => void, val: string) =>
     setArr(arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val])
 
+  // Check role on mount - redirect non-students away
+  useState(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return
+      supabase.from('users').select('role').eq('id', user.id).single().then(({ data }) => {
+        if (data?.role === 'parent') router.replace('/dashboard/parent')
+        if (data?.role === 'mentor') router.replace('/onboarding/mentor')
+      })
+    })
+  })
+
   async function finish() {
     setLoading(true)
     const supabase = createClient()

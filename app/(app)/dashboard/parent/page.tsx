@@ -66,10 +66,11 @@ export default async function ParentDashboard() {
             </p>
             <form action="/api/parent/link-child" method="POST" className="max-w-sm mx-auto">
               <div className="flex gap-2">
-                <input name="invite_code" placeholder="Enter child's invite code"
-                  className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-blue" />
+                <input name="invite_code" placeholder="e.g. A1B2C3D4"
+                  className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-blue uppercase tracking-widest text-center font-bold" />
                 <button type="submit" className="bg-brand-blue text-white px-4 py-2.5 rounded-xl text-sm font-medium">Link</button>
               </div>
+              <p className="text-xs text-gray-400 mt-2 text-center">Ask your child to open their dashboard and share their 8-character code</p>
             </form>
             <div className="mt-8 grid grid-cols-3 gap-4 text-center">
               {[

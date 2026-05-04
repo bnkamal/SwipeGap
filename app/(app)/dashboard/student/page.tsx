@@ -16,6 +16,9 @@ export default async function StudentDashboard() {
   const { data: leftSwipes } = await supabase.from('swipe_events').select('id').eq('student_id', user.id).eq('direction', 'left')
   const { data: resolvedPlans } = await supabase.from('learning_plans').select('id').eq('student_id', user.id).eq('status', 'resolved')
 
+  // Generate or fetch invite code for parent linking
+  const inviteCode = profile?.invite_code || user.id.slice(0, 8).toUpperCase()
+
   const totalXP = xpTotal?.reduce((sum, r) => sum + r.points, 0) ?? 0
   const gapsOpen = leftSwipes?.length ?? 0
   const gapsClosed = resolvedPlans?.length ?? 0
@@ -62,6 +65,21 @@ export default async function StudentDashboard() {
               <div className="text-xs text-gray-500 mt-0.5">{s.label}</div>
             </Card>
           ))}
+        </div>
+
+        {/* Parent Invite Code */}
+        <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100 rounded-2xl p-5">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <p className="text-sm font-semibold text-purple-900">👨‍👩‍👧 Share with Parent</p>
+              <p className="text-xs text-purple-600 mt-0.5">Give this code to your parent to link their account</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <code className="bg-white border border-purple-200 text-purple-800 font-bold text-lg px-4 py-2 rounded-xl tracking-widest">
+                {inviteCode}
+              </code>
+            </div>
+          </div>
         </div>
 
         {/* Quick actions */}
