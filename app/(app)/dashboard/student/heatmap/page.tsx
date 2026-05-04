@@ -63,21 +63,39 @@ export default function HeatmapPage() {
       .from('student_profiles').select('*').eq('user_id', user.id).single()
     if (!profile) return
 
-    // Load all relevant topics
-    const { data: allTopics } = await supabase
-      .from('topics').select('*')
-      .eq('grade', profile.grade)
-      .in('subject', profile.subjects ?? [])
-      .order('subject')
-
-    if (!allTopics) { setLoading(false); return }
-
-    // Load all swipe events for this student
+    // Load all swipe events for this student first
     const { data: swipeEvents } = await supabase
       .from('swipe_events')
       .select('topic_id, direction, created_at')
       .eq('student_id', user.id)
       .order('created_at', { ascending: false })
+
+    // Get unique topic IDs that have been swiped
+    const swipedTopicIds = Array.from(new Set((swipeEvents || []).map(e => e.topic_id)))
+
+    // Load profile topics (registered subjects + grade)
+    const { data: profileTopics } = await supabase
+      .from('topics').select('*')
+      .eq('grade', profile.grade)
+      .in('subject', profile.subjects ?? [])
+      .order('subject')
+
+    // Load any additional swiped topics not in profile
+    let extraTopics: any[] = []
+    if (swipedTopicIds.length > 0) {
+      const profileTopicIds = (profileTopics || []).map(t => t.id)
+      const extraIds = swipedTopicIds.filter(id => !profileTopicIds.includes(id))
+      if (extraIds.length > 0) {
+        const { data: extra } = await supabase
+          .from('topics').select('*')
+          .in('id', extraIds)
+        extraTopics = extra || []
+      }
+    }
+
+    // Combine profile topics + swiped topics (deduplicated)
+    const allTopics = [...(profileTopics || []), ...extraTopics]
+    if (allTopics.length === 0) { setLoading(false); return }
 
     // Group swipes by topic_id
     const swipesByTopic = (swipeEvents || []).reduce((acc: Record<string, SwipeEvent[]>, e) => {
