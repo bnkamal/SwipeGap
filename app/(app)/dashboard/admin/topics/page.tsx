@@ -92,7 +92,10 @@ export default function AdminTopics() {
 
   const displayed = topics.filter(t =>
     (!search || t.title.toLowerCase().includes(search.toLowerCase())) &&
-    (filterSubject === 'all' || t.subject === filterSubject)
+    (filterSubject === 'all' || t.subject === filterSubject) &&
+    (filterGrade === 'all' || t.grade === filterGrade) &&
+    (filterCurriculum === 'all' || t.curriculum === filterCurriculum) &&
+    (filterExam === 'all' || t.exam_tag === filterExam)
   )
 
   const ComboField = ({ label, fieldKey, options }: { label: string, fieldKey: string, options: string[] }) => (
@@ -186,14 +189,48 @@ export default function AdminTopics() {
         </div>
 
         {/* Search & Filter */}
-        <div className="flex gap-3 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search topics..."
-            className="flex-1 min-w-[200px] border border-gray-200 rounded-xl px-4 py-2 text-sm bg-white" />
-          <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)}
-            className="border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white">
-            <option value="all">All subjects</option>
-            {subjects.map(s => <option key={s}>{s}</option>)}
-          </select>
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-3">
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Search by topic name..."
+            className="w-full border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-blue" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Subject</label>
+              <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)}
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white">
+                <option value="all">All Subjects</option>
+                {subjects.map(s => <option key={s}>{s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Grade</label>
+              <select value={filterGrade} onChange={e => setFilterGrade(e.target.value)}
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white">
+                <option value="all">All Grades</option>
+                {grades.map(g => <option key={g}>{g}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Curriculum</label>
+              <select value={filterCurriculum} onChange={e => setFilterCurriculum(e.target.value)}
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white">
+                <option value="all">All Curriculums</option>
+                {curriculums.map(c => <option key={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Exam</label>
+              <select value={filterExam} onChange={e => setFilterExam(e.target.value)}
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white">
+                <option value="all">All Exams</option>
+                {exams.map(e => <option key={e}>{e}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-gray-500">{displayed.length} of {topics.length} topics</p>
+            <button onClick={() => { setSearch(''); setFilterSubject('all'); setFilterGrade('all'); setFilterCurriculum('all'); setFilterExam('all') }}
+              className="text-xs text-brand-blue hover:underline">Clear filters</button>
+          </div>
         </div>
 
         {/* Topics List */}
