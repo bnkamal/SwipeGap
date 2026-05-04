@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
@@ -23,7 +23,7 @@ export default function StudentOnboarding() {
     setArr(arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val])
 
   // Check role on mount - redirect non-students away
-  useState(() => {
+  useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
@@ -32,7 +32,7 @@ export default function StudentOnboarding() {
         if (data?.role === 'mentor') router.replace('/onboarding/mentor')
       })
     })
-  })
+  }, [])
 
   async function finish() {
     setLoading(true)
