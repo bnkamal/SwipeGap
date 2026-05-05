@@ -13,7 +13,6 @@
   * {
     box-sizing: border-box;
   }
-
   body {
     background-color: #fdf9f0;
     color: #1e1206;
@@ -21,35 +20,19 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-
-  h1,
-  h2,
-  h3 {
+  h1, h2, h3 {
     font-family: var(--font-dm-serif);
   }
 }
 
 @layer utilities {
-  .bg-cream {
-    background-color: #fdf9f0;
-  }
-  .bg-cream-mid {
-    background-color: #f5edd8;
-  }
-  .border-cream {
-    border-color: #e2d8c4;
-  }
-  .text-ink {
-    color: #1e1206;
-  }
-  .text-ink-mid {
-    color: #5c4a2a;
-  }
-  .text-ink-light {
-    color: #9a8060;
-  }
+  .bg-cream        { background-color: #fdf9f0; }
+  .bg-cream-mid    { background-color: #f5edd8; }
+  .border-cream    { border-color: #e2d8c4; }
+  .text-ink        { color: #1e1206; }
+  .text-ink-mid    { color: #5c4a2a; }
+  .text-ink-light  { color: #9a8060; }
 
-  /* Animate on scroll — add class via JS */
   .animate-on-scroll {
     opacity: 0;
     transform: translateY(16px);
@@ -61,7 +44,6 @@
   }
 }
 
-/* Card stack animation overrides for reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .animate-float-1,
   .animate-float-2,
