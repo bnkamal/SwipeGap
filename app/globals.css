@@ -25,14 +25,47 @@
     will-change: transform;
   }
   .heatmap-cell {
-    @apply rounded-md transition-colors duration-300 cursor-pointer
-           hover:ring-2 hover:ring-offset-1 hover:ring-brand-blue;
+    @apply rounded-md transition-colors duration-300 cursor-pointer;
+    outline-offset: 1px;
+  }
+  .heatmap-cell:hover {
+    ring: 2px;
+    border-color: #1A4D8F;
   }
   .sidebar-link {
     @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium
-           text-gray-600 hover:bg-blue-50 hover:text-brand-blue transition-colors;
+           text-gray-600 transition-colors;
+  }
+  .sidebar-link:hover {
+    background-color: #EFF6FF;
+    color: #1A4D8F;
   }
   .sidebar-link.active {
-    @apply bg-blue-50 text-brand-blue;
+    background-color: #EFF6FF;
+    color: #1A4D8F;
   }
+}
+
+@layer utilities {
+  .bg-cream        { background-color: #fdf9f0; }
+  .bg-cream-mid    { background-color: #f5edd8; }
+  .border-cream    { border-color: #e2d8c4; }
+  .text-ink        { color: #1e1206; }
+  .text-ink-mid    { color: #5c4a2a; }
+  .text-ink-light  { color: #9a8060; }
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .animate-on-scroll.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-1,
+  .animate-float-2,
+  .animate-float-3 { animation: none !important; }
 }
